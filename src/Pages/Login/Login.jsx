@@ -1,7 +1,25 @@
 import { Link } from "react-router-dom";
 import Navbar from "../Shared/Navabr/Navbar";
+import { useContext } from "react";
+import { MyContext } from "../../Context/AuthProvider";
 
 const Login = () => {
+    const {signIn} = useContext(MyContext)
+
+     const handleLogin = (e) => {
+       e.preventDefault();
+       const email = e.target.email.value;
+       const password = e.target.password.value;
+       console.log(email, password);
+
+       signIn(email,password)
+       .then(result =>{
+        console.log(result.user)
+       })
+       .catch(error =>{
+        console.error(error)
+       })
+     };
   return (
     <div>
       <Navbar></Navbar>
@@ -9,17 +27,23 @@ const Login = () => {
         <div className="hero-content flex-col">
           <div className="text-center">
             <h1 className="text-5xl font-bold mb-4 ">Login now!</h1>
+            <p className="py-6">
+              Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda
+              excepturi exercitationem quasi. In deleniti eaque aut repudiandae
+              et a id nisi.
+            </p>
           </div>
           <div className="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
-            <form className="card-body">
+            <form onSubmit={handleLogin} className="card-body ">
               <div className="form-control">
                 <label className="label">
                   <span className="label-text">Email</span>
                 </label>
                 <input
                   type="email"
+                  name="email"
                   placeholder="email"
-                  className="input input-bordered px-12"
+                  className="input input-bordered "
                   required
                 />
               </div>
@@ -29,6 +53,7 @@ const Login = () => {
                 </label>
                 <input
                   type="password"
+                  name="password"
                   placeholder="password"
                   className="input input-bordered"
                   required
