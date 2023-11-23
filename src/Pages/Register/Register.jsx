@@ -1,10 +1,15 @@
 import { Link } from "react-router-dom";
 import Navbar from "../Shared/Navabr/Navbar";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { MyContext } from "../../Context/AuthProvider";
+import { IoEyeOutline } from "react-icons/io5";
+import { FaRegEyeSlash } from "react-icons/fa6";
 
-  const Register = () => {
+const Register = () => {
   const { createUser } = useContext(MyContext);
+  const [registerError, setRegisterError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [showPassword, setShowPassword] = useState(false)
 
   const handleRegister = (e) => {
     e.preventDefault();
@@ -13,15 +18,33 @@ import { MyContext } from "../../Context/AuthProvider";
     const name = e.target.name.value;
     const photoUrl = e.target.Photo.value;
     console.log(email, password, name, photoUrl);
+
+    // Reset Error
+    setRegisterError("");
+    setSuccess("");
+
+    // Password validation
+    if (password.length < 6) {
+      setRegisterError("Password Must be at least six characters or  More");
+      return;
+    } 
     
-//    For Creating A New User
+    
+    else if (!/[A-Z]/.test(password)) {
+      setRegisterError("Password Must have one upper Case");
+      return;
+    }
+
+    //    For Creating A New User
 
     createUser(email, password)
       .then((result) => {
         console.log(result.user);
+        setSuccess("User Created Successfully");
       })
       .catch((error) => {
         console.error(error);
+        setRegisterError(error.message);
       });
   };
   return (
@@ -79,12 +102,22 @@ import { MyContext } from "../../Context/AuthProvider";
                 <div className="form-control">
                   <label className="label">
                     <span className="label-text">Password</span>
+                    <span
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute ml-64 mt-20 text-xl"
+                    >
+                      {showPassword ? (
+                        <FaRegEyeSlash></FaRegEyeSlash>
+                      ) : (
+                        <IoEyeOutline></IoEyeOutline>
+                      )}
+                    </span>
                   </label>
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     name="password"
                     placeholder="password"
-                    className="input input-bordered"
+                    className="input input-bordered static"
                     required
                   />
                   <label className="label">
@@ -92,6 +125,14 @@ import { MyContext } from "../../Context/AuthProvider";
                       Forgot password?
                     </a>
                   </label>
+                  <div className="form-control">
+                    <label className="label cursor-pointer">
+                      <span className="label-text  link link-hover font-semibold">
+                        <a href="#">Terms and conditions</a>
+                      </span>
+                      <input type="checkbox" className="checkbox" />
+                    </label>
+                  </div>
                 </div>
                 <div className="form-control mt-6">
                   <button className="btn btn-primary">Register</button>
@@ -105,6 +146,12 @@ import { MyContext } from "../../Context/AuthProvider";
                   </Link>
                 </p>
               </div>
+              {registerError && (
+                <p className="text-red-600 ml-4 ">{registerError}</p>
+              )}
+              {success && (
+                <p className="text-green-700 font-bold ml-8">{success}</p>
+              )}
             </div>
           </div>
         </div>

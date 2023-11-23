@@ -8,7 +8,7 @@ import RightSideNav from "../Shared/RightSideNav/RightSideNav";
 const NewsDetails = () => {
     const [news, setNews] = useState({})
     const {id} = useParams();
-    const newses = useLoaderData();
+    const newses = useLoaderData([]);
     
 
     useEffect(()=>{
